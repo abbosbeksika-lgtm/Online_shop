@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row g-5">
+        <div class="col-md-6">
+            <div class="main-image-container mb-3 shadow-sm rounded-4 overflow-hidden bg-white">
+                {% if product.main_image %}
+                    <img src="{{ product.main_image.url }}" id="mainImage" class="img-fluid w-100" alt="{{ product.title }}" style="object-fit: contain; max-height: 500px;">
+                {% endif %}
+            </div>
+
+            <div class="d-flex gap-2 overflow-auto pb-2">
+                {% if product.main_image %}
+                    <img src="{{ product.main_image.url }}" class="thumb-img active" onclick="changeImage(this.src)" alt="Main">
+                {% endif %}
+                {% for image in images %}
+                    <img src="{{ image.image.url }}" class="thumb-img" onclick="changeImage(this.src)" alt="Detail">
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            {% if request.user.is_authenticated and request.user.role == 'seller' and request.user == product.seller %}
+                <div class="d-flex gap-2 mb-3">
+
+                    <a href="{% url 'edit_product' product.id %}" class="btn btn-warning btn-sm rounded-pill px-3 shadow-sm text-white">
+                        <i class="fas fa-edit me-1"></i> Tahrirlash
+                    </a>
+
+                    <button type="button" class="btn btn-danger btn-sm rounded-pill px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="fas fa-trash me-1"></i> O'chirish
+                    </button>
+                </div>
+
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0 shadow rounded-4">
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title fw-bold" id="deleteModalLabel">Mahsulotni o'chirish</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center py-4">
+                                <i class="fas fa-exclamation-triangle text-danger mb-3" style="font-size: 3rem;"></i>
+                                <p class="mb-0">Haqiqatdan ham <strong>"{{ product.title }}"</strong> mahsulotini o'chirib tashlamoqchimisiz?</p>
+                            </div>
+                            <div class="modal-footer border-0 d-flex justify-content-center pb-4">
+                                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Bekor qilish</button>
+                                <form action="{% url 'product_detail' product.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger rounded-pill px-4">Ha, o'chirilsin</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <nav aria-label="breadcrumb">
+
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Bosh sahifa</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'products' %}">{{ product.category.title }}</a></li>
+                    <li class="breadcrumb-item active">{{ product.brand }}</li>
+                </ol>
+            </nav>
+
+            <h1 class="fw-bold mb-2">{{ product.title }}</h1>
+            <p class="text-muted mb-3">Brend: <span class="badge bg-light text-dark border">{{ product.brand }}</span></p>
+
+            <div class="price-section mb-4 p-3 rounded-4 bg-white shadow-sm">
+                {% if product.discount_price %}
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="h2 fw-bold text-primary mb-0">${{ product.discount_price }}</span>
+                        <span class="text-decoration-line-through text-muted small">${{ product.price }}</span>
+                        <span class="badge bg-danger">Chegirma -{{ product.precent }}%</span>
+                    </div>
+                {% else %}
+                    <span class="h2 fw-bold text-primary">${{ product.price }}</span>
+                {% endif %}
+            </div>
+
+            <div class="description-section mb-4">
+                <h5 class="fw-bold">Tavsif:</h5>
+                <p class="text-secondary leading-relaxed">{{ product.desc }}</p>
+            </div>
+
+            <div class="order-card p-4 rounded-4 bg-white shadow-sm border-top border-primary border-4">
+                <form action="{% url 'add_to_cart' product.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="row g-3 align-items-center">
+                        <div class="col-sm-4">
+                            <label class="form-label small fw-bold">Miqdori:</label>
+                            <div class="input-group">
+                                <button class="btn btn-outline-secondary" type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
+                                <input type="number" name="quantity" class="form-control text-center border-secondary" value="1" min="1" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-8 d-grid gap-2">
+                            <label class="form-label d-none d-sm-block">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow">
+                                <i class="fas fa-cart-plus me-2"></i> Savatga qo'shish
+                            </button>
+                            <button type="button" class="btn btn-outline-dark btn-md rounded-pill">
+                                <i class="fas fa-bolt me-2"></i> Bir klikda xarid
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <section class="mt-5 pt-5 border-top">
+        <h3 class="fw-bold mb-4 text-center">O'xshash mahsulotlar</h3>
+        <div class="row g-4">
+            {% for related_product in related_products %}
+            <div class="col-6 col-md-3">
+                <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-2 related-card">
+                    <a href="{% url 'product_detail' related_product.id %}" class="text-decoration-none text-dark">
+                        {% if related_product.main_image %}
+                            <img src="{{ related_product.main_image.url }}" class="card-img-top rounded-3" alt="{{ related_product.title }}" style="height: 180px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body px-1 py-3">
+                            <h6 class="card-title text-truncate mb-1">{{ related_product.title }}</h6>
+                            <p class="text-primary fw-bold mb-0">${{ related_product.price }}</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<style>
+    .thumb-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 12px;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: 0.3s;
+        border: 2px solid transparent;
+    }
+    .thumb-img:hover, .thumb-img.active {
+        opacity: 1;
+        border-color: var(--primary-color);
+    }
+    .main-image-container {
+        background: #fff;
+        transition: 0.3s;
+    }
+    .order-card {
+        background-color: #f8fafc;
+    }
+    .related-card {
+        transition: transform 0.3s;
+    }
+    .related-card:hover {
+        transform: scale(1.03);
+    }
+    /* Input number spinnerlarni yashirish (toza ko'rinish uchun) */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<script>
+    function changeImage(src) {
+        document.getElementById('mainImage').src = src;
+        // Aktiv thumbnailni belgilash
+        const thumbs = document.querySelectorAll('.thumb-img');
+        thumbs.forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+</script>
+{% endblock %}

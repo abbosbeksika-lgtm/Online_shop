@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="checkout">
+        <h2>Checkout</h2>
+        {% if cart_items %}
+            <ul>
+                {% for item in cart_items %}
+                    <li>
+                        {{ item.product.title }} - {{ item.quantity }} x {{ item.product.price }} USD
+                        <p>Total: {{ item.total_price }} USD</p>
+                    </li>
+                {% endfor %}
+            </ul>
+            <p>Total Price: {{ total_price }} USD</p>
+            <form action="{% url 'checkout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Complete Purchase</button>
+            </form>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+{% endblock %}

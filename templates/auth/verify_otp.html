@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Email tasdiqlash{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow mt-5">
+            <div class="card-body p-4">
+                <h3 class="text-center mb-4"><i class="fas fa-envelope-open"></i> Email tasdiqlash</h3>
+                <p class="text-center text-muted">Emailingizga yuborilgan 6 xonali kodni kiriting</p>
+
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Tasdiqlash kodi</label>
+                        <input type="text" name="code" class="form-control text-center fs-4" maxlength="6" required placeholder="000000">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Tasdiqlash</button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <a href="{% url 'resend_otp' %}" class="btn btn-outline-secondary btn-sm">Kodni qayta yuborish</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

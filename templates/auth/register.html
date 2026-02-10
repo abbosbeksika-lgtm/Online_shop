@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}Ro'yxatdan o'tish{% endblock %}
+
+{% block content %}
+<!-- Custom style -->
+<style>
+    body {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card {
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+    }
+
+    .card-body {
+        padding: 2.5rem;
+        background-color: #fff;
+    }
+
+    .card-body h3 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        color: #343a40;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        border-color: #4e73df;
+    }
+
+    .btn-primary {
+        background-color: #4e73df;
+        border-color: #4e73df;
+        font-weight: 600;
+        padding: 0.75rem;
+        border-radius: 10px;
+        transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #2e59d9;
+        border-color: #2e59d9;
+    }
+
+    .form-icon {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #6c757d;
+    }
+
+    .position-relative {
+        position: relative;
+    }
+
+    .alert-danger {
+        border-radius: 10px;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="row justify-content-center w-100">
+    <div class="col-md-5">
+        <div class="card shadow mt-5">
+            <div class="card-body">
+                <h3><i class="fas fa-user-plus"></i> Ro'yxatdan o'tish</h3>
+
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3 position-relative">
+                        <label class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" placeholder="Username" required>
+                    </div>
+                    <div class="mb-3 position-relative">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="Email" required>
+                    </div>
+                    <div class="mb-3 position-relative">
+                        <label class="form-label">Parol</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Parol" required>
+                        <span class="fas fa-eye form-icon" onclick="togglePassword('password')"></span>
+                    </div>
+                    <div class="mb-3 position-relative">
+                        <label class="form-label">Parolni tasdiqlang</label>
+                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Parolni tasdiqlang" required>
+                        <span class="fas fa-eye form-icon" onclick="togglePassword('confirm_password')"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Ro'yxatdan o'tish</button>
+                </form>
+
+                <p class="text-center mt-3">Akkauntingiz bormi? <a href="{% url 'login' %}">Kirish</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Password show/hide script -->
+<script>
+    function togglePassword(id) {
+        const input = document.getElementById(id);
+        if (input.type === "password") {
+            input.type = "text";
+        } else {
+            input.type = "password";
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="card shadow-sm rounded-4 p-4 border-success">
+        <h2 class="fw-bold text-success mb-4 text-center">Yangi mahsulot qo'shish</h2>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Mahsulot nomi (Title)</label>
+                    <input type="text" name="title" class="form-control" placeholder="Masalan: iPhone 15 Pro" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Brend</label>
+                    <input type="text" name="brand" class="form-control" placeholder="Masalan: Apple" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Kategoriya</label>
+                    <select name="category" class="form-select" required>
+                        <option value="" selected disabled>Kategoriyani tanlang</option>
+                        {% for cate in categories %}
+                            <option value="{{ cate.id }}">{{ cate.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Soni (Stock)</label>
+                    <input type="number" name="stock" class="form-control" placeholder="0" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Narxi ($)</label>
+                    <input type="number" step="0.01" name="price" class="form-control" placeholder="0.00" required>
+                </div>
+
+
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Chegirma foizi (%)</label>
+                    <input type="number" name="precent" class="form-control" placeholder="Masalan: 10">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tavsif (Description)</label>
+                <textarea name="desc" class="form-control" rows="4" placeholder="Mahsulot haqida batafsil ma'lumot..."></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">Asosiy rasm</label>
+                <input type="file" name="main_image" class="form-control" required>
+                <small class="text-muted">Mahsulotning sifatli rasmini yuklang.</small>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-center">
+                <button type="submit" class="btn btn-success px-5 rounded-pill text-white fw-bold shadow-sm">
+                    <i class="fas fa-plus-circle me-1"></i> Saqlash
+                </button>
+                <a href="{% url 'profile' %}" class="btn btn-outline-secondary px-5 rounded-pill">Bekor qilish</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
