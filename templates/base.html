@@ -160,7 +160,9 @@
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Bosh sahifa</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'products' %}">Mahsulotlar</a></li>
+                        {% if user.role != 'seller' %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'cart_detail' %}">Buyurtmalar</a></li>
+                        {% endif %}
                         {% if user.is_authenticated %}
                         <li>
                             <a href="{% url 'wishlist' %}" class="nav-link position-relative">
