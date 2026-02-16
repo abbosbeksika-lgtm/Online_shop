@@ -23,15 +23,18 @@
 
         <div class="col-md-6">
             {% if request.user.is_authenticated and request.user.role == 'seller' and request.user == product.seller %}
-                <div class="d-flex gap-2 mb-3">
-
-                    <a href="{% url 'edit_product' product.id %}" class="btn btn-warning btn-sm rounded-pill px-3 shadow-sm text-white">
-                        <i class="fas fa-edit me-1"></i> Tahrirlash
+                <div class="d-grid gap-2 mb-3 mt-4" style="max-width: 300px;">
+                    <a href="{% url 'edit_product' product.id %}" class="btn btn-outline-warning rounded-pill py-2 fw-bold shadow-sm custom-edit-btn">
+                        <i class="fas fa-edit me-2"></i> Tahrirlash
                     </a>
 
-                    <button type="button" class="btn btn-danger btn-sm rounded-pill px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        <i class="fas fa-trash me-1"></i> O'chirish
-                    </button>
+                    <form action="{% url 'delete_product' product.id %}" method="post" class="w-100">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger w-100 rounded-pill py-2 fw-bold shadow-sm"
+                                onclick="return confirm('Haqiqatdan ham bu mahsulotni o’chirmoqchimisiz?')">
+                            <i class="fas fa-trash-alt me-2"></i> O'chirish
+                        </button>
+                    </form>
                 </div>
 
                 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -102,9 +105,6 @@
                             <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow">
                                 <i class="fas fa-cart-plus me-2"></i> Savatga qo'shish
                             </button>
-                            <button type="button" class="btn btn-outline-dark btn-md rounded-pill">
-                                <i class="fas fa-bolt me-2"></i> Bir klikda xarid
-                            </button>
                         </div>
                     </div>
                 </form>
@@ -168,6 +168,27 @@
         -webkit-appearance: none;
         margin: 0;
     }
+    <style>
+    /* Tahrirlash tugmasi uchun maxsus hover effekti */
+    .custom-edit-btn {
+        color: #ffc107; /* Bootstrap warning rangi */
+        border-color: #ffc107;
+    }
+
+    .custom-edit-btn:hover {
+        background-color: #ffc107 !important;
+        color: white !important; /* Kursor borganda matn oq bo'ladi */
+        border-color: #ffc107 !important;
+    }
+
+    /* O'chirish tugmasi Bootstrap-da tayyor, lekin unga ham matn rangini oq qilishni qo'shamiz */
+    .btn-outline-danger:hover {
+        color: white !important;
+    }
+
+    /* Qolgan stil kodlaringiz... */
+    .thumb-img { ... }
+</style>
 </style>
 
 <script>

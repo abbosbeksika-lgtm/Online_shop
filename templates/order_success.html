@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="container text-center py-5">
-    <h2>Buyurtma muvaffaqiyatli amalga oshirildi 🎉</h2>
-    <a href="{% url 'products' %}" class="btn btn-primary mt-3">
-        Xaridni davom ettirish
-    </a>
+<div class="text-center py-5">
+    <h2 class="fw-bold">Buyurtma muvaffaqiyatli!</h2>
+    <p>Rahmat! Sizning buyurtmangiz qabul qilindi.</p>
+    <a href="{% url 'products' %}" class="btn btn-primary mt-3">Mahsulotlar</a>
+    <a href="{% url 'my_orders' %}" class="btn btn-outline-secondary mt-3">Mening buyurtmalarim</a>
 </div>
 {% endblock %}

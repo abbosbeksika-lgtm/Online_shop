@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 pb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <a href="{% url 'profile' %}" class="btn btn-link text-decoration-none text-muted mb-3 p-0">
+                <i class="fas fa-arrow-left me-2"></i> Profilga qaytish
+            </a>
+
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                <div class="card-header bg-white border-bottom p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="fw-bold mb-1">Buyurtma #{{ order.id }}</h4>
+                            <p class="text-muted small mb-0">{{ order.created_at|date:"d-F, Y | H:i" }}</p>
+                        </div>
+                        <div class="text-end">
+                            {% if order.status == 'canceled' %}
+                                <span class="badge bg-danger rounded-pill px-3 py-2">Bekor qilingan</span>
+                            {% elif order.is_paid %}
+                                <span class="badge bg-success rounded-pill px-3 py-2">To'langan</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark rounded-pill px-3 py-2">Kutilmoqda</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr class="small text-muted text-uppercase">
+                                    <th class="ps-4">Mahsulot</th>
+                                    <th class="text-center">Soni</th>
+                                    <th class="text-end pe-4">Narxi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            {% if item.product.main_image %}
+                                                <img src="{{ item.product.main_image.url }}" class="rounded-3 me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="bg-light rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                    <i class="fas fa-image text-muted"></i>
+                                                </div>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-0 fw-bold">{{ item.product.title }}</h6>
+                                                <small class="text-muted">{{ item.product.brand }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">{{ item.quantity }} ta</td>
+                                    <td class="text-end pe-4 fw-bold text-primary">${{ item.price }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-white p-4 border-top">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="h5 mb-0 fw-bold">Umumiy summa:</span>
+                        <span class="h4 mb-0 fw-bold text-primary">${{ order.total_price }}</span>
+                    </div>
+
+                    {% if order.status != 'canceled' and not order.is_paid %}
+                        <div class="border-top pt-3 text-center">
+                            <form action="{% url 'order_cancel' order.id %}" method="POST" id="cancelForm">
+                                {% csrf_token %}
+                                <button type="button" class="btn btn-outline-danger rounded-pill px-5" onclick="confirmCancel()">
+                                    <i class="fas fa-trash-alt me-2"></i> Buyurtmani bekor qilish
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmCancel() {
+    if (confirm("Haqiqatan ham ushbu buyurtmani bekor qilmoqchimisiz? Mahsulotlar omborga qaytariladi.")) {
+        document.getElementById('cancelForm').submit();
+    }
+}
+</script>
+{% endblock %}

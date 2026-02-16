@@ -20,4 +20,6 @@ urlpatterns = [
     path('cart/delete/<int:id>/', views.delete_from_cart, name='delete_from_cart'),
     path('wishlist/', WishListView.as_view(), name='wishlist'),
     path('wishlist/toggle/<int:id>/', toggle_wishlist, name='toggle_wishlist'),
+    path('profile/', views.ProfileView.as_view(), name='profile'),
+    path('profile/edit/', views.ProfileEditView.as_view(), name='profile_edit'),
 ]

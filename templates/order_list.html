@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">Mening buyurtmalarim</h2>
+
+    {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-hover border">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Sana</th>
+                        <th>Umumiy summa</th>
+                        <th>Holati</th>
+                        <th>Amallar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                        <td>{{ order.total_price }} so'm</td>
+                        <td>
+                            <span class="badge {% if order.status == 'Completed' %}bg-success{% else %}bg-warning{% endif %}">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> Batafsil
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            Sizda hali buyurtmalar mavjud emas. 
+            <br>
+            <a href="{% url 'products' %}" class="btn btn-primary mt-3">Xarid qilishni boshlash</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
