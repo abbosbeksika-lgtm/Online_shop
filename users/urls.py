@@ -9,7 +9,6 @@ urlpatterns = [
     path('logout/', views.LogoutView.as_view(), name='logout'),
     path('resend-otp/', views.ResendOTPView.as_view(), name='resend_otp'),
     path('add_to_cart/<int:id>', views.add_to_cart, name='add_to_cart'),
-    path('checkout/', views.checkout, name='checkout'),
     path('cart/detail/', views.CartDetailView.as_view(), name='cart_detail'),
     path('seller/products/', views.SellerProductListView.as_view(), name='seller_product'),
     path('edit/product/<int:id>', views.ProductUpdateView.as_view(), name='edit_product'),

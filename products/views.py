@@ -31,9 +31,27 @@ class HomeView(View):
 class ProductsView(View):
     def get(self, request):
         products = Product.objects.all()
+        categories = Category.objects.all()
+
+        category_id = request.GET.get('category')
+        min_price = request.GET.get('min_price')
+        max_price = request.GET.get('max_price')
+
+
+        if category_id:
+            products = products.filter(category_id=category_id)
+
+        if min_price:
+            products = products.filter(price__gte=min_price)
+
+        if max_price:
+            products = products.filter(price__lte=max_price)
+
         return render(request, 'products.html', {
             "products": products,
+            "categories": categories,
         })
+
 
 class ProductDetailView(View):
     def get(self, request, id):
